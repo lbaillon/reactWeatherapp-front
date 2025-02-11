@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 
 
 export default function SignUp() {
+  const backURL = process.env.NEXT_PUBLIC_BACK_URL
   const router = useRouter()
   const dispatch = useDispatch()
   const [userName, setUserName] = useState<string>('')
@@ -15,7 +16,7 @@ export default function SignUp() {
   const [password, setPassword] = useState<string>('')
 
   const handleRegister = () => {
-    fetch('http://localhost:3000/users/signup', {
+    fetch(`${backURL}users/signup`, {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({username: userName, email: userEmail, password: password} )

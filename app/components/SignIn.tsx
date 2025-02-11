@@ -11,9 +11,10 @@ export default function SignIn() {
   const [userEmail, setUserEmail] = useState<string>('')
   const [password, setPassword] = useState<string>('')
   const dispatch = useDispatch()
+  const backURL = process.env.NEXT_PUBLIC_BACK_URL
 
   const handleConnect = () => {
-    fetch('http://localhost:3000/users/signin', {
+    fetch(`${backURL}users/signin`, {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({email: userEmail, password: password} )
