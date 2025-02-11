@@ -38,10 +38,14 @@ export default function Home() {
     const dispatch = useDispatch()
 	const user: User = useSelector((state: {user: {value: User}}) => state.user.value);
 
-    console.log(cityTable)
-
     useEffect(() => {
-        if(user.token){
+        if(!user.token){
+            fetch(`${backURL}paris`)
+            .then((response) => response.json())
+            .then((data: City) => {
+                setCityTable([{...data, userCityName: "paris"}]);
+            }); 
+        }else{
             for (let city of user.cities){
                 fetch(`${backURL}${city}`)
                 .then((response) => response.json())
@@ -52,12 +56,6 @@ export default function Home() {
                     setCityTable((prevCities) => [...prevCities, {...data, userCityName: city}]);
                 });
             }
-        }else{
-            fetch(`${backURL}paris`)
-            .then((response) => response.json())
-            .then((data: City) => {
-                setCityTable([{...data, userCityName: "paris"}]);
-            }); 
         }
     }, [user.token]);
 
@@ -80,19 +78,20 @@ export default function Home() {
             .then((data: City|Error) => {
                 if("reason" in data){
                     return
+                }else{
+                    fetch(`${backURL}users/cities/${city}`, {
+                        method:'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ token: user.token})
+                    }).then(response => response.json())
+                    .then(data => {
+                        if("reason" in data){
+                            console.log(data)
+                        }
+                    })
                 }
                 setCityTable((prevCities) => [...prevCities, {...data, userCityName: city}]);
             });
-            fetch(`${backURL}users/cities/${city}`, {
-                method:'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ token: user.token})
-            }).then(response => response.json())
-            .then(data => {
-                if("reason" in data){
-                    console.log(data)
-                }
-            })
         }
         setCity("");
     };
@@ -103,9 +102,22 @@ export default function Home() {
         }
     };
 
+    const handleLogout = () => {
+        dispatch(logout());
+        setCityTable([])
+        setTimeout(()=> {
+            fetch(`${backURL}paris`)
+            .then((response) => response.json())
+            .then((data: City) => {
+                setCityTable([{...data, userCityName: "paris"}]);
+            }); 
+        }, 100)
+    };
 
 
-    const cities = cityTable.map((data, i) => {
+    const sortedCities = [...cityTable].reverse()
+
+    const cities = sortedCities.map((data, i) => {
         return (
             <CityCard
                 key={`city_${i}`}
@@ -119,9 +131,6 @@ export default function Home() {
         );
     });
 
-    const handleLogout = () => {
-		dispatch(logout());
-	};
 
     let userSection
     if (user.token) {

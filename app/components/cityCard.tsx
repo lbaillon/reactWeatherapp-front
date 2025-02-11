@@ -2,6 +2,7 @@ import styles from "./cityCard.module.css";
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { useSelector } from "react-redux";
+import { useEffect, useState } from "react";
 
 type CityProps = {
     userCityName: string,
@@ -21,9 +22,12 @@ type User = {
 export default function CityCard({ userCityName, cityName, description, main, max, min }: CityProps)  {
     const backURL = process.env.NEXT_PUBLIC_BACK_URL;
 	const user: User = useSelector((state: {user: {value: User}}) => state.user.value);
+    const [isDeleted, setIsDeleted] = useState(false)
+    const [cardDisplay, setCardDisplay] = useState({'display': 'flex'})
 
+    const logoList= ['Clouds', 'Clear', 'Rain']
     let weatherLogo:string = `${main}.png`
-    if (main === "Mist"){
+    if (!logoList.includes(main)){
         weatherLogo = "Clouds.png"
     }
 
@@ -39,13 +43,22 @@ export default function CityCard({ userCityName, cityName, description, main, ma
                 console.log(data)
             }
         })
+        setIsDeleted(true)
     }
+
+    useEffect(()=> {
+        if (isDeleted) {
+            setCardDisplay({'display': 'none'})
+        }else {
+            setCardDisplay({'display': 'flex'})
+        }
+    }, [isDeleted])
 
 
     let card
 
     if (user.token){
-        card = <div className ={styles.card}>
+        card = <div className ={styles.card} style={cardDisplay} >
         <div className={styles.delete}>
             <FontAwesomeIcon icon={faXmark} className={styles.xmark} onClick={()=>deleteCity()} />
         </div>
@@ -59,7 +72,7 @@ export default function CityCard({ userCityName, cityName, description, main, ma
             </div>
     </div>
     } else {
-        card = <div className ={styles.card}>
+        card = <div className ={styles.card} style={cardDisplay}>
         <p className={styles.name}>{cityName}</p>
             <p className={styles.description}>{description}</p>
             <img className={styles.weatherIcon} src={weatherLogo}/>
