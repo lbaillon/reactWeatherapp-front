@@ -1,6 +1,6 @@
 .card {
     height: 50%;
-    width: 25%;
+    width: 20%;
     background-color: white;
     border-radius: 20px;
     margin: 2%;
@@ -10,9 +10,10 @@
 }
 
 .name {
-    font-size: clamp(14px, 2vw, 30px);
+    font-size: clamp(10px, 5vw, 30px);;
     width: fit-content;
-    height: 25%;
+    height: auto;
+    max-height: 20%;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -20,10 +21,15 @@
     padding: 10px;
     font-weight: 500;
     word-wrap: break-word;
-    overflow: hidden;
+    white-space: normal;
+    resize: horizontal;
+    flex-wrap: wrap;
 }
 
+
+
 .description {
+    margin-top: 15px;
     font-size: 25px;
 }
 
