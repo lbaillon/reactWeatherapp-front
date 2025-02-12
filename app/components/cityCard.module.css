@@ -10,7 +10,15 @@
 }
 
 .name {
-    font-size: 30px;
+    font-size: 2em;
+    width: 100%;
+    height: 25%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 20px;
+    font-weight: 500;
 }
 
 .description {
