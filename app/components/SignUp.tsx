@@ -23,6 +23,7 @@ export default function SignUp() {
     }).then(response => response.json())
     .then(data =>{
       if(data){
+        console.log(data)
         dispatch(login({username: data.username, token: data.token, cities: data.cities}))
         setUserName("")
         setUserEmail("")
